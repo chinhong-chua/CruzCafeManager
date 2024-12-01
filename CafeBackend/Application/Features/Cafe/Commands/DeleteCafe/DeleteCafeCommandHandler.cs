@@ -1,4 +1,5 @@
-﻿using CafeBackend.Application.Contracts.Persistence;
+﻿using CafeBackend.Application.Common;
+using CafeBackend.Application.Contracts.Persistence;
 using MediatR;
 
 namespace CafeBackend.Application.Features.Cafe.Commands.DeleteCafe
@@ -16,12 +17,12 @@ namespace CafeBackend.Application.Features.Cafe.Commands.DeleteCafe
 
             if (cafeToDelete == null)
             {
-                throw new Exception();
+                throw new NotFoundException(nameof(Cafe), request.Id);
             }
 
             await _cafeRepository.DeleteAsync(cafeToDelete);
 
-            throw new NotImplementedException();
+            return cafeToDelete.Id;
         }
     }
 }
