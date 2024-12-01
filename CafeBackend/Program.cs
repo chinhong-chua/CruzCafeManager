@@ -1,5 +1,6 @@
 using CafeBackend.Application;
 using CafeBackend.Application.Contracts.Persistence;
+using CafeBackend.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddTransient<ICafeRepository, FakeCafeRepository>();
 
 

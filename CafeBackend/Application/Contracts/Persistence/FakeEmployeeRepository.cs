@@ -63,11 +63,16 @@ namespace CafeBackend.Application.Contracts.Persistence
             return Task.FromResult(_employees);
         }
 
-        public Task<Employee> GetByIdAsync(int id)
+        public Task<Employee> GetByIdAsync(string id)
         {
             // Since Id is a string, we can find an employee by their unique identifier
             var employee = _employees.FirstOrDefault(e => e.Id == id.ToString());
             return Task.FromResult(employee);
+        }
+
+        public Task<Employee> GetByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<Employee> UpdateAsync(Employee entity)
