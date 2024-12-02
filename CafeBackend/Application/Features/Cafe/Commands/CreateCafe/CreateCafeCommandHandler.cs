@@ -25,7 +25,7 @@ namespace CafeBackend.Application.Features.Cafe.Commands.CreateCafe
 
             var cafeDetails = new Domain.Entities.Cafe()
             {
-                Name = request.Name,
+                Name = request.Name,    
                 Description = request.Description,
                 Location = request.Location,
                 Logo = request.Logo,

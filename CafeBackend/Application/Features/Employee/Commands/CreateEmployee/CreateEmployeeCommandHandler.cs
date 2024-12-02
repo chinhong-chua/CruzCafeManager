@@ -24,7 +24,7 @@ namespace CafeBackend.Application.Features.Employee.Commands.CreateEmployee
 
             var employee = new Domain.Entities.Employee
             {
-                Id = request.Id,
+                Id = await _employeeRepository.GenerateEmployeeIdAsync(),
                 Name = request.Name,
                 EmailAddress = request.EmailAddress,
                 PhoneNumber = request.PhoneNumber,

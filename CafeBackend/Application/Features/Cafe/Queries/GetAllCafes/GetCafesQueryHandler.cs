@@ -14,6 +14,11 @@ namespace CafeBackend.Application.Features.Cafe.Queries.GetAllCafes
         {
             var cafes = await _cafeRepository.GetAllAsync();
 
+            if(!String.IsNullOrEmpty(request.Location))
+            {
+                cafes = cafes.Where(c => c.Location == request.Location).ToList();
+            }
+
             var cafesDto = cafes.Select(c => new CafeDto
             {
                 Id = c.Id,

@@ -46,36 +46,31 @@ namespace CafeBackend.Application.Contracts.Persistence
             };
         }
 
-        public Task<Employee> CreateAsync(Employee entity)
+        public Task<Employee> GetByIdAsync(string id)
+        {
+            var employee = _employees.FirstOrDefault(e => e.Id == id.ToString());
+            return Task.FromResult(employee);
+        }
+
+
+        public Task CreateAsync(Employee entity)
         {
             _employees.Add(entity);
             return Task.FromResult(entity);
         }
 
-        public Task<Employee> DeleteAsync(Employee entity)
+        public Task DeleteAsync(Employee entity)
         {
             _employees.Remove(entity);
             return Task.FromResult(entity);
         }
 
-        public Task<List<Employee>> GetAllAsync()
+        public Task<IList<Employee>> GetAllAsync()
         {
-            return Task.FromResult(_employees);
+            return Task.FromResult((IList<Employee>)(_employees));
         }
 
-        public Task<Employee> GetByIdAsync(string id)
-        {
-            // Since Id is a string, we can find an employee by their unique identifier
-            var employee = _employees.FirstOrDefault(e => e.Id == id.ToString());
-            return Task.FromResult(employee);
-        }
-
-        public Task<Employee> GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Employee> UpdateAsync(Employee entity)
+        public Task UpdateAsync(Employee entity)
         {
             var existing = _employees.FirstOrDefault(e => e.Id == entity.Id);
             if (existing != null)
@@ -87,6 +82,11 @@ namespace CafeBackend.Application.Contracts.Persistence
                 existing.StartDate = entity.StartDate;
             }
             return Task.FromResult(existing);
+        }
+
+        public Task<string> GenerateEmployeeIdAsync()
+        {
+            return Task.FromResult("UI123456781");
         }
     }
 }

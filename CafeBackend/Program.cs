@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddTransient<ICafeRepository, FakeCafeRepository>();
+//builder.Services.AddTransient<ICafeRepository, FakeCafeRepository>();
 
 
 
