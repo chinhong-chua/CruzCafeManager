@@ -14,8 +14,8 @@ namespace CafeBackend.Infrastructure
 
             // Register repositories
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<ICafeRepository, FakeCafeRepository>();
-            services.AddScoped<IEmployeeRepository, FakeEmployeeRepository>();
+            services.AddScoped<ICafeRepository, CafeRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             return services;
         }

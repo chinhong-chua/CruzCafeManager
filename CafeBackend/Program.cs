@@ -1,6 +1,6 @@
 using CafeBackend.Application;
-using CafeBackend.Application.Contracts.Persistence;
 using CafeBackend.Infrastructure;
+using CafeBackend.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,5 +31,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+}
 
 app.Run();

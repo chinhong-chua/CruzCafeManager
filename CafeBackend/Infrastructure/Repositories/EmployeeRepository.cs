@@ -11,9 +11,17 @@ namespace CafeBackend.Infrastructure.Repositories
         {
 
         }
+        public override async Task<IList<Employee>> GetAllAsync()
+        {
+            return await _context.Employees
+                .Include(e => e.Cafe)
+                .ToListAsync();
+        }
         public async Task<Employee> GetByIdAsync(string id)
         {
-            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+            var employee = await _context.Employees
+                .Include(e => e.Cafe)
+                .FirstOrDefaultAsync(e => e.Id == id);
             return employee;
         }
 

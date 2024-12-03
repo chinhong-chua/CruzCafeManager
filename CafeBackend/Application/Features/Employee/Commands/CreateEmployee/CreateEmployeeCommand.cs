@@ -5,7 +5,6 @@ namespace CafeBackend.Application.Features.Employee.Commands.CreateEmployee
 {
     public class CreateEmployeeCommand : IRequest<String>
     {
-        public required string Id { get; set; }
         public required string Name { get; set; }
         public required string EmailAddress { get; set; }
         public required string PhoneNumber { get; set; }

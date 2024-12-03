@@ -24,7 +24,7 @@ namespace CafeBackend.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IList<T>> GetAllAsync()
+        public virtual async Task<IList<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }

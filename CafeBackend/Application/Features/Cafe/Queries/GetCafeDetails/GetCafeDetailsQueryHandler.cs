@@ -1,4 +1,5 @@
-﻿using CafeBackend.Application.Contracts.Persistence;
+﻿using CafeBackend.Application.Common;
+using CafeBackend.Application.Contracts.Persistence;
 using MediatR;
 
 namespace CafeBackend.Application.Features.Cafe.Queries.GetCafeDetails
@@ -13,6 +14,11 @@ namespace CafeBackend.Application.Features.Cafe.Queries.GetCafeDetails
         public async Task<CafeDetailsDto> Handle(GetCafeDetailsQuery request, CancellationToken cancellationToken)
         {
             var cafeDetails = await _cafeRepository.GetByIdAsync(request.Id);
+
+            if (cafeDetails == null)
+            {
+                throw new NotFoundException(nameof(Cafe), request.Id);
+            }
 
             var cafeDetailsDto = new CafeDetailsDto()
             {

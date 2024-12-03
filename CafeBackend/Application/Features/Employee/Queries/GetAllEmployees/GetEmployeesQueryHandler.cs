@@ -16,11 +16,11 @@ namespace CafeBackend.Application.Features.Employee.Queries.GetAllEmployees
 
             var employees = await _employeeRepository.GetAllAsync();
 
-            if (!String.IsNullOrEmpty(request.Name))
-                employees = employees.Where(e => e.Name!.StartsWith(request.Name)).ToList();
+            if (!String.IsNullOrEmpty(request.CafeName))
+                employees = employees.Where(e => e.Cafe!.Name!.Equals(request.CafeName)).ToList();
 
             if(!employees.Any())
-                throw new BadRequestException("No employee data.");
+                return new List<EmployeeDto>();
 
             var employeeDtos = employees.Select(e => new EmployeeDto
             {
