@@ -25,7 +25,6 @@ const CafeTable: React.FC<CafeTableProps> = ({
       field: "name",
       sortable: true,
       filter: true,
-      flex: 1,
     },
     { headerName: "Location", field: "location" },
     {
@@ -43,7 +42,7 @@ const CafeTable: React.FC<CafeTableProps> = ({
       },
     },
 
-    { headerName: "Description", field: "description" },
+    { headerName: "Description", field: "description",minWidth:200, flex:1, wrapText: true },
     {
       headerName: "Employees",
       field: "employees",
@@ -59,7 +58,6 @@ const CafeTable: React.FC<CafeTableProps> = ({
     {
       headerName: "Actions",
       field: "id",
-      flex: 1,
       cellRenderer: (params: any) => (
         <>
           <Button variant="outlined" onClick={() => onEdit(params.value)}>
