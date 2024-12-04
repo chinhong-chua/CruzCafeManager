@@ -23,6 +23,7 @@ namespace CafeBackend.Application.Features.Employee.Queries.GetEmployeeDetails
                 Name = employeeDetails.Name!,
                 EmailAddress = employeeDetails.EmailAddress,
                 PhoneNumber = employeeDetails.PhoneNumber ?? string.Empty,
+                Gender = employeeDetails.Gender.ToString(),
                 DaysWorked = (int)(DateTime.Now - employeeDetails.StartDate.GetValueOrDefault()).TotalDays,
                 Cafe = employeeDetails.Cafe?.Name,
 

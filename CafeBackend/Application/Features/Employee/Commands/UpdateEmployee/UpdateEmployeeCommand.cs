@@ -9,7 +9,7 @@ namespace CafeBackend.Application.Features.Employee.Commands.UpdateEmployee
         public string Name { get; set; }
         public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
-        public Guid? CafeId { get; set; }
+        public string? Cafe { get; set; }
         public DateTime? StartDate { get; set; }
     }
 }

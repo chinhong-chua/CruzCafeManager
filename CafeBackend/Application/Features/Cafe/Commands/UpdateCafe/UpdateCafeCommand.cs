@@ -7,7 +7,7 @@ namespace CafeBackend.Application.Features.Cafe.Commands.UpdateCafe
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public byte[]? Logo { get; set; } // Optional
+        public string? Logo { get; set; } // Optional
         public string Location { get; set; }
     }
 }

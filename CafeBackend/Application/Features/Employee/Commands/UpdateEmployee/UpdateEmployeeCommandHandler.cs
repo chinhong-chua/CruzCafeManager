@@ -23,7 +23,7 @@ namespace CafeBackend.Application.Features.Employee.Commands.UpdateEmployee
             employeeToUpdate.Name = request.Name;
             employeeToUpdate.EmailAddress = request.EmailAddress;
             employeeToUpdate.PhoneNumber = request.PhoneNumber;
-            employeeToUpdate.CafeId = request.CafeId;
+            employeeToUpdate.CafeId = string.IsNullOrEmpty(request.Cafe) ? null : new Guid(request.Cafe);
             employeeToUpdate.StartDate = request.StartDate;
 
 

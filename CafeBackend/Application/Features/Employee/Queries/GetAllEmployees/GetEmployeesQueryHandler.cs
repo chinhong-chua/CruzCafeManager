@@ -17,9 +17,9 @@ namespace CafeBackend.Application.Features.Employee.Queries.GetAllEmployees
             var employees = await _employeeRepository.GetAllAsync();
 
             if (!String.IsNullOrEmpty(request.CafeName))
-                employees = employees.Where(e => e.Cafe!.Name!.Equals(request.CafeName)).ToList();
+                employees = employees.Where(e => string.Equals(e.Cafe?.Name, request.CafeName, StringComparison.OrdinalIgnoreCase)).ToList();
 
-            if(!employees.Any())
+            if (!employees.Any())
                 return new List<EmployeeDto>();
 
             var employeeDtos = employees.Select(e => new EmployeeDto
@@ -28,7 +28,7 @@ namespace CafeBackend.Application.Features.Employee.Queries.GetAllEmployees
                 Name = e.Name!,
                 EmailAddress = e.EmailAddress,
                 PhoneNumber = e.PhoneNumber ?? string.Empty,
-                DaysWorked = (int)(DateTime.Now - e.StartDate.GetValueOrDefault()).TotalDays,
+                DaysWorked = e.StartDate == null? 0 : (int)(DateTime.Now - e.StartDate.Value).TotalDays,
                 Cafe = e.Cafe?.Name,
 
             }).ToList();

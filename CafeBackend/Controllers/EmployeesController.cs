@@ -56,7 +56,7 @@ namespace CafeBackend.Controllers
             }
             catch (BadRequestException ex)
             {
-                return new BadRequestObjectResult(ex.Message);
+                return BadRequest(new {message = ex.Message, errors = ex.ValidationErrors});
             }
 
         }
@@ -64,11 +64,6 @@ namespace CafeBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(string id, [FromBody] UpdateEmployeeCommand command)
         {
-            if (command == null)
-            {
-                return BadRequest("Request body cannot be null.");
-            }
-
             try
             {
                 command.Id = id;

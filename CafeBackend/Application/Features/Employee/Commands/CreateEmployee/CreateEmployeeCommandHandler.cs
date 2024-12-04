@@ -29,7 +29,7 @@ namespace CafeBackend.Application.Features.Employee.Commands.CreateEmployee
                 EmailAddress = request.EmailAddress,
                 PhoneNumber = request.PhoneNumber,
                 Gender = (Domain.Entities.Gender)request.Gender!,
-                CafeId = request.CafeId,
+                CafeId = string.IsNullOrEmpty(request.Cafe)? null : new Guid(request.Cafe),
                 StartDate = request.StartDate ?? DateTime.UtcNow
             };
 

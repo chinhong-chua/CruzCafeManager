@@ -27,7 +27,7 @@ namespace CafeBackend.Application.Features.Cafe.Queries.GetCafeDetails
                 Name = cafeDetails.Name,
                 Location = cafeDetails.Location,
                 Employees = cafeDetails.Employees?.Count() ?? 0,
-                Logo = cafeDetails.Logo
+                Logo = cafeDetails.Logo != null ? $"data:image/png;base64,{Convert.ToBase64String(cafeDetails.Logo)}" : null,
             };
 
             return cafeDetailsDto;

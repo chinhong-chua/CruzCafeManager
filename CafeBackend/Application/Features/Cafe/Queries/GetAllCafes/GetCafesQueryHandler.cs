@@ -1,4 +1,5 @@
 ﻿using CafeBackend.Application.Contracts.Persistence;
+using CafeBackend.Domain.Entities;
 using MediatR;
 
 namespace CafeBackend.Application.Features.Cafe.Queries.GetAllCafes
@@ -14,8 +15,9 @@ namespace CafeBackend.Application.Features.Cafe.Queries.GetAllCafes
         {
             var cafes = await _cafeRepository.GetAllAsync();
 
-            if(!String.IsNullOrEmpty(request.Location))
-                cafes = cafes.Where(c => c.Location == request.Location).ToList();
+            if (!String.IsNullOrEmpty(request.Location))
+                cafes = cafes.Where(c => c.Location.ToLower().StartsWith(request.Location.ToLower())).ToList();
+
 
             if (!cafes.Any())
                 return new List<CafeDto>();
@@ -27,9 +29,8 @@ namespace CafeBackend.Application.Features.Cafe.Queries.GetAllCafes
                 Description = c.Description,
                 Location = c.Location,
                 Employees = c.Employees?.Count > 0 ? c.Employees.Count : 0,
-                Logo = null
+                Logo = c.Logo != null ? $"data:image/png;base64,{Convert.ToBase64String(c.Logo)}" : null,
             }).ToList();
-
             return cafesDto;
 
         }

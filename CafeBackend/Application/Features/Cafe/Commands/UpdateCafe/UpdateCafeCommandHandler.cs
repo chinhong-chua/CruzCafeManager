@@ -1,5 +1,6 @@
 ﻿using CafeBackend.Application.Common;
 using CafeBackend.Application.Contracts.Persistence;
+using CafeBackend.Domain.Entities;
 using MediatR;
 
 namespace CafeBackend.Application.Features.Cafe.Commands.UpdateCafe
@@ -22,11 +23,21 @@ namespace CafeBackend.Application.Features.Cafe.Commands.UpdateCafe
             cafeToUpdate.Name = request.Name;
             cafeToUpdate.Description = request.Description;
             cafeToUpdate.Location = request.Location;
-            cafeToUpdate.Logo = request.Logo;
+            if (!string.IsNullOrEmpty(request.Logo))
+            {
+                cafeToUpdate.Logo = ConvertBase64ToByteArray(request.Logo);
+            }
 
             await _cafeRepository.UpdateAsync(cafeToUpdate);
 
             return cafeToUpdate.Id;
+        }
+
+        private byte[] ConvertBase64ToByteArray(string base64String)
+        {
+            // Remove the data:image/...;base64, prefix if it exists
+            var data = base64String.Contains(",") ? base64String.Split(',')[1] : base64String;
+            return Convert.FromBase64String(data);
         }
     }
 }

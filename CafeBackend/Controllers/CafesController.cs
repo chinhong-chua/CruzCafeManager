@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CafeBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class CafeController : ControllerBase
+    public class CafesController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public CafeController(IMediator mediator)
+        public CafesController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -24,12 +24,6 @@ namespace CafeBackend.Controllers
         {
             var cafes = await _mediator.Send(new GetCafesQuery() { Location = location });
             return Ok(cafes);
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateCafe([FromBody] CreateCafeCommand command)
-        {
-            var cafeId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetCafeById), new { id = cafeId }, null);
         }
 
         [HttpGet("{id}")]
@@ -46,6 +40,21 @@ namespace CafeBackend.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCafe([FromBody] CreateCafeCommand command)
+        {
+            try
+            {
+                var cafeId = await _mediator.Send(command);
+                return CreatedAtAction(nameof(GetCafeById), new { id = cafeId }, null);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message, errors = ex.ValidationErrors });
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCafe(Guid id, [FromBody] UpdateCafeCommand command)
         {
@@ -56,7 +65,6 @@ namespace CafeBackend.Controllers
 
             try
             {
-                // Set the Id from the route parameter
                 command.Id = id;
                 var cafe = await _mediator.Send(command);
 
