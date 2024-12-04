@@ -16,11 +16,6 @@ function App() {
           <Route path="/employees" element={<EmployeesPage />} />
           <Route path="/employees/add" element={<AddEditEmployeePage />} />
           <Route path="/employees/edit/:id" element={<AddEditEmployeePage />} />
-          {/* <Route path="/cafes/add" element={<AddEditCafePage />} />
-          <Route path="/cafes/edit/:id" element={<AddEditCafePage />} />
-          <Route path="/employees/add" element={<AddEditEmployeePage />} />
-          <Route path="/employees/edit/:id" element={<AddEditEmployeePage />} />
-          <Route path="*" element={<NotFoundPage />} /> */}
         </Routes>
       </BrowserRouter>
     </>
