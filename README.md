@@ -12,4 +12,5 @@
 
 # Frontend Running steps
 1. npm install (initial setup)
-2. npm run dev
+2. update baseURL from api.ts in services folder to your local url of CafeBackend server
+3. npm run dev
