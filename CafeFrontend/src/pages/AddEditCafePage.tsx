@@ -26,7 +26,7 @@ const schema = yup.object().shape({
     .string()
     .required("Name is required")
     .min(6, "Name must be at least 6 characters")
-    .max(10, "Name must be at most 10 characters"),
+    .max(80, "Name must be at most 80 characters"),
   description: yup
     .string()
     .required("Description is required")

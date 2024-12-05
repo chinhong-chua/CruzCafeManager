@@ -1,30 +1,51 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { getCafes, deleteCafe } from '../services/cafeService';
-import CafeTable from '../components/CafeTable';
-import { Cafe } from '../interfaces';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { getCafes, deleteCafe } from "../services/cafeService";
+import CafeTable from "../components/CafeTable";
+import { Cafe } from "../interfaces";
+import LoadingScreen from "../components/LoadingScreen";
+import useDebounce from "../components/hooks/useDebounce";
 
 const CafesPage: React.FC = () => {
   const [cafes, setCafes] = useState<Cafe[]>([]);
-  const [locationFilter, setLocationFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState("");
+  const debouncedLocationFilter = useDebounce(locationFilter, 600);
+
+  const [loading, setLoading] = useState<boolean>(true);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchCafes();
-  }, [locationFilter]);
+  // Debounce the locationFilter input
+  // useEffect(() => {
+  //   const handler = setTimeout(() => {
+  //     setDebouncedLocationFilter(locationFilter);
+  //   }, 500);
 
-  const fetchCafes = async () => {
-    try {
-      const response = await getCafes(locationFilter);
-      setCafes(response.data);
-    } catch (error) {
-      console.error('Failed to fetch cafes', error);
-    }
-  };
+  //   // Cleanup timeout if locationFilter changes before delay is over
+  //   return () => {
+  //     clearTimeout(handler);
+  //   };
+  // }, [locationFilter]);
+
+  // Fetch cafes whenever debouncedLocationFilter changes
+  useEffect(() => {
+    const fetchCafes = async () => {
+      setLoading(true);
+      try {
+        const response = await getCafes(debouncedLocationFilter);
+        setCafes(response.data);
+      } catch (error) {
+        console.error("Failed to fetch cafes", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCafes();
+  }, [debouncedLocationFilter]);
 
   const handleAddCafe = () => {
-    navigate('/cafes/add');
+    navigate("/cafes/add");
   };
 
   const handleEditCafe = (id: string) => {
@@ -32,21 +53,29 @@ const CafesPage: React.FC = () => {
   };
 
   const handleDeleteCafe = async (id: string) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this cafe?');
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this cafe?"
+    );
     if (confirmDelete) {
       try {
         await deleteCafe(id);
-        fetchCafes();
+        // Re-fetch cafes after deletion
+        const response = await getCafes(debouncedLocationFilter);
+        setCafes(response.data);
       } catch (error) {
-        console.error('Failed to delete cafe', error);
+        console.error("Failed to delete cafe", error);
       }
     }
   };
 
   const handleEmployeesClick = (cafeName: string) => {
-    if(!cafeName) return;
+    if (!cafeName) return;
     navigate(`/employees?cafe=${encodeURIComponent(cafeName)}`);
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box padding={2}>
@@ -58,12 +87,21 @@ const CafesPage: React.FC = () => {
           label="Filter by Location"
           value={locationFilter}
           onChange={(e) => setLocationFilter(e.target.value)}
-          style={{ marginRight: '16px' }}
+          style={{ marginRight: "16px" }}
         />
-        <Button variant="contained" color="primary" onClick={handleAddCafe} style={{ marginRight: '16px' }}>
-          Add New cafe
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddCafe}
+          style={{ marginRight: "16px" }}
+        >
+          Add New Cafe
         </Button>
-        <Button variant="contained" color="secondary" onClick={()=> navigate('/employees')}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/employees")}
+        >
           Go to Employees
         </Button>
       </Box>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,26 +7,26 @@ import {
   Select,
   Typography,
   SelectChangeEvent,
+  CircularProgress,
 } from "@mui/material";
 import { getEmployees, deleteEmployee } from "../services/employeeService";
 import { getCafes } from "../services/cafeService";
 import { Employee, Cafe } from "../interfaces";
 import EmployeeTable from "../components/EmployeeTable";
+import LoadingScreen from "../components/LoadingScreen";
 
 const EmployeesPage: React.FC = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [cafeFilter, setCafeFilter] = useState("");
-  const [cafes, setCafes] = useState<Cafe[]>([]);
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    // Parse query parameters from the URL
+  const location = useLocation();
+
+  const [cafeFilter, setCafeFilter] = useState<string>(() => {
     const params = new URLSearchParams(location.search);
-    const cafeQueryParam = params.get("cafe");
-    if (cafeQueryParam) {
-      setCafeFilter(cafeQueryParam);
-    }
-  }, [location.search]);
+    return params.get("cafe") || "";
+  });
+
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [cafes, setCafes] = useState<Cafe[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCafesData = async () => {
@@ -41,18 +41,31 @@ const EmployeesPage: React.FC = () => {
     fetchCafesData();
   }, []);
 
+  // Fetch employees whenever cafeFilter changes
   useEffect(() => {
+    const fetchEmployees = async () => {
+      setLoading(true);
+      try {
+        const response = await getEmployees(cafeFilter);
+        setEmployees(response.data);
+      } catch (error) {
+        console.error("Failed to fetch employees", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEmployees();
   }, [cafeFilter]);
 
-  const fetchEmployees = async () => {
-    try {
-      const response = await getEmployees(cafeFilter);
-      setEmployees(response.data);
-    } catch (error) {
-      console.error("Failed to fetch employees", error);
+  // Update cafeFilter when URL changes
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const cafeQueryParam = params.get("cafe") || "";
+    if (cafeFilter !== cafeQueryParam) {
+      setCafeFilter(cafeQueryParam);
     }
-  };
+  }, [location.search]);
 
   const handleAddEmployee = () => {
     navigate("/employees/add");
@@ -69,7 +82,8 @@ const EmployeesPage: React.FC = () => {
     if (confirmDelete) {
       try {
         await deleteEmployee(id);
-        fetchEmployees();
+        const response = await getEmployees(cafeFilter);
+        setEmployees(response.data);
       } catch (error) {
         console.error("Failed to delete employee", error);
       }
@@ -77,12 +91,22 @@ const EmployeesPage: React.FC = () => {
   };
 
   const handleCafeClick = (cafeName: string) => {
-    navigate(`/cafes?name=${encodeURIComponent(cafeName)}`);
+    navigate(`/employees?cafe=${encodeURIComponent(cafeName)}`);
+    setCafeFilter(cafeName);
   };
 
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
-    setCafeFilter(event.target.value);
+    const newFilter = event.target.value;
+    setCafeFilter(newFilter);
+    // Update URL query parameter
+    navigate(`/employees?cafe=${encodeURIComponent(newFilter)}`, {
+      replace: true,
+    });
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <Box padding={2}>
@@ -107,10 +131,19 @@ const EmployeesPage: React.FC = () => {
             </MenuItem>
           ))}
         </Select>
-        <Button variant="contained" color="primary" onClick={handleAddEmployee} style={{ marginRight: '16px' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddEmployee}
+          style={{ marginRight: "16px" }}
+        >
           Add New Employee
         </Button>
-        <Button variant="contained" color="secondary" onClick={()=> navigate('/cafes')}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => navigate("/cafes")}
+        >
           Go to Cafes
         </Button>
       </Box>

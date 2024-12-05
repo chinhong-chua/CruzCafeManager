@@ -24,15 +24,18 @@ const EmployeeTable: React.FC<EmployeeTableProps> = ({
     { headerName: "Name", field: "name", sortable: true, filter: true },
     { headerName: "Email", field: "emailAddress" },
     { headerName: "Phone", field: "phoneNumber" },
-    { headerName: "Days Worked", field: "daysWorked", sortable: true, flex:1 },
+    { headerName: "Days Worked", field: "daysWorked", sortable: true, flex: 1, minWidth:150 },
     {
       headerName: "Cafe",
       field: "cafe",
-      cellRenderer: (params: any) => (
-        <Button variant="text" onClick={() => onCafeClick(params.value)}>
-          {params.value}
-        </Button>
-      ),
+      flex: 1,
+      minWidth:200,
+      wrapText:true
+      // cellRenderer: (params: any) => (
+      //   <Button variant="text" onClick={() => onCafeClick(params.value)}>
+      //     {params.value}
+      //   </Button>
+      // ),
     },
     {
       headerName: "Actions",
