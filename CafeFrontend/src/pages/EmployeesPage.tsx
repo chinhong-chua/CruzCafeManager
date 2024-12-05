@@ -7,7 +7,7 @@ import {
   Select,
   Typography,
   SelectChangeEvent,
-  CircularProgress,
+  // CircularProgress,
 } from "@mui/material";
 import { getEmployees, deleteEmployee } from "../services/employeeService";
 import { getCafes } from "../services/cafeService";
@@ -90,10 +90,10 @@ const EmployeesPage: React.FC = () => {
     }
   };
 
-  const handleCafeClick = (cafeName: string) => {
-    navigate(`/employees?cafe=${encodeURIComponent(cafeName)}`);
-    setCafeFilter(cafeName);
-  };
+  // const handleCafeClick = (cafeName: string) => {
+  //   navigate(`/employees?cafe=${encodeURIComponent(cafeName)}`);
+  //   setCafeFilter(cafeName);
+  // };
 
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const newFilter = event.target.value;
@@ -151,7 +151,7 @@ const EmployeesPage: React.FC = () => {
         data={employees}
         onEdit={handleEditEmployee}
         onDelete={handleDeleteEmployee}
-        onCafeClick={handleCafeClick}
+        // onCafeClick={handleCafeClick}
       />
     </Box>
   );

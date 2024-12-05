@@ -10,14 +10,14 @@ interface EmployeeTableProps {
   data: Employee[];
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
-  onCafeClick: (cafeName: string) => void;
+  // onCafeClick: (cafeName: string) => void;
 }
 
 const EmployeeTable: React.FC<EmployeeTableProps> = ({
   data,
   onEdit,
   onDelete,
-  onCafeClick,
+  // onCafeClick,
 }) => {
   const columns: ColDef[] = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
