@@ -20,6 +20,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ReusableTextField from "../components/ReusableTextField";
 import ReusableSelectField from "../components/ReusableSelectField";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 
 interface FormValues {
   name: string;
@@ -27,6 +29,7 @@ interface FormValues {
   phoneNumber: string;
   gender: string;
   cafe?: string;
+  startDate?: Date | null;
 }
 
 const genderOptions = [
@@ -56,6 +59,10 @@ const schema = yup.object().shape({
     .required("Gender is required")
     .oneOf(["Male", "Female", "PreferNotToSay"], "Invalid gender value"),
   cafe: yup.string(),
+  startDate: yup
+    .date()
+    .nullable()
+    .min(new Date(2010, 0, 1), 'Start date must be on or after January 1, 2010'),
 });
 
 const AddEditEmployeePage: React.FC = () => {
@@ -88,9 +95,8 @@ const AddEditEmployeePage: React.FC = () => {
           setEmployee(employeeData);
 
           const cafeId =
-            cafesResponse.data.find(
-              (c) => c.name === employeeData.cafe
-            )?.id || "";
+            cafesResponse.data.find((c) => c.name === employeeData.cafe)?.id ||
+            "";
 
           reset({
             name: employeeData.name,
@@ -98,6 +104,9 @@ const AddEditEmployeePage: React.FC = () => {
             phoneNumber: employeeData.phoneNumber,
             gender: employeeData.gender,
             cafe: cafeId,
+            startDate: employeeData.startDate
+              ? new Date(employeeData.startDate)
+              : null,
           });
         } else {
           reset();
@@ -122,6 +131,7 @@ const AddEditEmployeePage: React.FC = () => {
       gender: data.gender,
       cafe: data.cafe,
       daysWorked: employee?.daysWorked || 0,
+      startDate: data.startDate ? data.startDate.toISOString() : null,
     };
 
     try {
@@ -197,7 +207,33 @@ const AddEditEmployeePage: React.FC = () => {
             </TextField>
           )}
         />
-
+        <Box marginTop={2}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Controller
+              name="startDate"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  label="Start Date"
+                  value={field.value}
+                  onChange={(date) => field.onChange(date)}
+                  format="dd/MM/yyyy" 
+                  minDate={new Date(2000, 0, 1)} // Set minimum date to January 1, 2000
+                  maxDate={new Date()}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: !!errors.startDate, // Set error state
+                      helperText: errors.startDate
+                        ? errors.startDate.message
+                        : "",
+                    },
+                  }}
+                ></DatePicker>
+              )}
+            />
+          </LocalizationProvider>
+        </Box>
         <Box marginTop={2}>
           <Button
             type="submit"
